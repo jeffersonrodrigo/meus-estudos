@@ -1,0 +1,179 @@
+# this is an example of the Uber API
+# as a demonstration of an API spec in YAML
+swagger: '2.0'
+info:
+  title: Lista de Usuários
+  description: Essa API provê o acesso aos usuários do sistema
+  contact:
+    name: Jefferson Rodrigo
+    email: jeffersonrodrigoaguiar@gmail.com
+  version: "0.0.1"
+# the domain of the service
+host: api.meusite.com
+# array of all schemes that your API supports
+schemes:
+  - https
+# will be prefixed to all paths
+basePath: /v1
+produces:
+  - application/json
+paths: # Caminho
+  /users: #recurso
+    get:
+      summary: Lista dos Usuários # Até 120 caracteres
+      description: |
+        Este endpoint retorna **todos** os usuários cadastrados no sistema.
+      tags:
+        - Users # Se quiser agrupar os paths para aparecer as tags
+      responses: #respostas possiveis para o path
+        200: # status OK
+          description: Uma lista(array) de usuários.
+          schema: #Qual o formato do dado que irá retornar
+            type: array
+            items:
+              $ref: '#/definitions/User'
+        default: # Caso dê algum erro o que pode ser retornado
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: Cria um usuário # Até 120 caracteres
+      description: |
+        Este endpoint **cria um usuário** no sistema.
+      parameters:
+        - name: user
+          in: body
+          description: Usuário
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      tags:
+        - Users # Se quiser agrupar os paths para aparecer as tags
+      responses: #respostas possiveis para o path
+        201: # status CREATED
+          description: Usuário cadastrado com sucesso.
+          schema: #Qual o formato do dado que irá retornar
+            $ref: '#/definitions/User'
+        default: # Caso dê algum erro o que pode ser retornado
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      summary: Atualiza um usuário # Até 120 caracteres
+      description: |
+        Este endpoint **atualiza um usuário** no sistema. O ID do usuário deve ser informado.
+      parameters:
+        - name: user
+          in: body
+          description: Usuário
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      tags:
+        - Users # Se quiser agrupar os paths para aparecer as tags
+      responses: #respostas possiveis para o path
+        200: # status OK
+          description: Usuário alterado com sucesso.
+          schema: #Qual o formato do dado que irá retornar
+            $ref: '#/definitions/User'
+        404:
+          description: Usuário não encontrado. Lembre-se de informar o ID.
+        default: # Caso dê algum erro o que pode ser retornado
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    patch:
+      summary: Atualiza um usuário # Até 120 caracteres
+      description: |
+        Este endpoint **atualiza um usuário** no sistema. O ID do usuário deve ser informado.
+      parameters:
+        - name: user
+          in: body
+          description: Usuário
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      tags:
+        - Users # Se quiser agrupar os paths para aparecer as tags
+      responses: #respostas possiveis para o path
+        200: # status OK
+          description: Usuário alterado com sucesso.
+          schema: #Qual o formato do dado que irá retornar
+            $ref: '#/definitions/User'
+        404:
+          description: Usuário não encontrado. Lembre-se de informar o ID.
+        default: # Caso dê algum erro o que pode ser retornado
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /users/{id}: #recurso
+    get:
+      summary: Mostra apenas um usuário # Até 120 caracteres
+      description: |
+        Este endpoint retorna **apenas o usuário a qual foi informado o id**.
+      parameters:
+        - name: id
+          in: path
+          description: ID du usuário
+          required: true
+          type: integer
+      tags:
+        - Users # Se quiser agrupar os paths para aparecer as tags
+      responses: #respostas possiveis para o path
+        200: # status OK
+          description: Usuário encontrado
+          schema: #Qual o formato do dado que irá retornar
+            $ref: '#/definitions/User'
+        default: # Caso dê algum erro o que pode ser retornado
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: Apagar um usuário # Até 120 caracteres
+      description: |
+        Este endpoint **apaga o usuário a qual foi informado o id**.
+      parameters:
+        - name: id
+          in: path
+          description: ID du usuário
+          required: true
+          type: integer
+      tags:
+        - Users # Se quiser agrupar os paths para aparecer as tags
+      responses: #respostas possiveis para o path
+        200: # status OK
+          description: Usuário excluido com sucesso
+        404: # status NOT FOUND
+          description: Usuário não encontrado
+        410: # status GONE
+          description: Este usuário não existe mais
+        default: # Caso dê algum erro o que pode ser retornado
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+definitions: # Onde vai fazer as definições dos objetos
+  User:
+    type: object
+    required:
+      - email
+      - name
+    properties:
+      id:
+        type: integer
+        description: Código do usuário
+      email:
+        type: string
+        description: Email do usuário
+      name:
+        type: string
+        description: Nome do usuário        
+  Error: # Tipo de erro que irá retornar caso apareça algum
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      fields:
+        type: string
